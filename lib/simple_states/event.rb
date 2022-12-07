@@ -6,7 +6,7 @@ module SimpleStates
     }
 
     def call(obj, data, opts)
-      return false if not ordered?(obj, data) or not applies?(obj, data)
+      return false if not applies?(obj, data)
 
       run_callbacks(:before, obj, data)
       set_attrs(obj, data)
@@ -67,7 +67,8 @@ module SimpleStates
       end
 
       def send_method(name, obj, data)
-        obj.send(name, *[self.name, data].slice(0, obj.method(name).arity.abs))
+        arity = obj.method(name).arity.abs rescue 0
+        obj.send(name, *[self.name, data].slice(0, arity))
       end
 
       def known_state?(obj)

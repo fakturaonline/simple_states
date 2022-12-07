@@ -9,27 +9,27 @@ describe SimpleStates, 'ordering' do
 
   let(:obj) { klass.new }
 
-  shared_examples_for 'accepts the event' do
+  shared_examples_for 'accepts finish event' do
     it { expect(obj.finish).to eq true }
     it { expect { obj.finish }.to change { obj.state } }
     it { expect { obj.finish }.to change { obj.finished_at } }
   end
 
-  shared_examples_for 'skips the event' do
-    it { expect(obj.start).to eq false }
-    it { expect { obj.start }.to_not change { obj.state } }
-    it { expect { obj.start }.to_not change { obj.started_at } }
+  shared_examples_for 'accepts start event' do
+    it { expect(obj.start).to eq true }
+    it { expect { obj.start }.to change { obj.state } }
+    it { expect { obj.start }.to change { obj.started_at } }
   end
 
   describe 'both states well known' do
     describe 'in order' do
       before { obj.start }
-      include_examples 'accepts the event'
+      include_examples 'accepts finish event'
     end
 
     describe 'out of order' do
       before { obj.finish }
-      include_examples 'skips the event'
+      include_examples 'accepts start event'
     end
   end
 
@@ -38,12 +38,12 @@ describe SimpleStates, 'ordering' do
 
     describe 'in order' do
       before { obj.start }
-      include_examples 'accepts the event'
+      include_examples 'accepts finish event'
     end
 
     describe 'out of order' do
       before { obj.finish }
-      include_examples 'skips the event'
+      include_examples 'accepts start event'
     end
   end
 end
